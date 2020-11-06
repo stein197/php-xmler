@@ -30,5 +30,13 @@
 				});
 			});
 		})
-		->footer();
+		->footer('content', [
+			'class' => 'dd'
+		]);
 	});
+
+	_(['version'=>1])
+	->svg(function($svg) {
+		$svg
+		->xlink_linkTag();
+	})
