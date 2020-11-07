@@ -1,24 +1,19 @@
 <?php
 	namespace STEIN197\XMLBuilder;
 
+	// TODO: parse DOMDocument::loadHTML
+	// TODO: Escape quotes
+	// TODO: attributes on new line?
 	class Builder {
 
-		private const TOKEN_TAG_SELF_CLOSING = 0;
-		private const TOKEN_TAG_OPEN = 1;
-		private const TOKEN_TAG_CLOSE = 2;
-		private const TOKEN_TAG_XML = 3;
-		private const TOKEN_BUILDER = 4;
-		private const TOKEN_CONTENT = 5;
+		public const MODE_XML = 1;
+		public const MODE_HTML = 2;
 
-		private const MODE_XML = 1;
-		private const MODE_HTML = 2;
+		// TODO: private
+		var $data = [];
+		var $depth;
 
-		private $data = [];
-		private $mode;
-		private $useSelfClosing = true;
-
-		public function __construct(int $mode = self::MODE_HTML, array $xmlAttributes = []) {
-			$this->mode = $mode;
+		public function __construct(array $xmlAttributes = []) {
 			if ($xmlAttributes) {
 				$attributes = [];
 				foreach ($xmlAttributes as $k => $v)
