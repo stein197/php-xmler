@@ -14,9 +14,6 @@
     "autoload": {
         "psr-4": {
             "": "src/"
-        },
-        "files": [
-            "src/STEIN197/XMLBuilder/functions.php"
-        ]
+        }
     }
 }
