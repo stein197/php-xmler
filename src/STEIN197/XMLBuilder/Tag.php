@@ -37,15 +37,19 @@
 		public function getBeautified(int $mode = Builder::MODE_HTML, bool $useSelfClosing = false, bool $parseXMLString = true, int $depth = 0): string {
 			$attributes = $this->stringifyAttributes();
 			if ($this->content) {
-				$result = str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}>\n" : "<{$this->name}>\n");
-				foreach ($this->content as $content) {
-					if ($content instanceof self) {
-						$result .= $content->getBeautified($mode, $useSelfClosing, $parseXMLString, $depth + 1);
-					} else {
-						$result .= str_repeat("\t", $depth + 1).$content."\n";
+				if (sizeof($this->content) === 1 && !($this->content[0] instanceof self)) {
+					return str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}>" : "<{$this->name}>").$this->content[0]."</{$this->name}>\n";
+				} else {
+					$result = str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}>\n" : "<{$this->name}>\n");
+					foreach ($this->content as $content) {
+						if ($content instanceof self) {
+							$result .= $content->getBeautified($mode, $useSelfClosing, $parseXMLString, $depth + 1);
+						} else {
+							$result .= str_repeat("\t", $depth + 1).$content."\n";
+						}
 					}
+					return $result.str_repeat("\t", $depth)."</{$this->name}>\n";
 				}
-				return $result.str_repeat("\t", $depth)."</{$this->name}>\n";
 			} else {
 				switch ($mode) {
 					case Builder::MODE_HTML:
