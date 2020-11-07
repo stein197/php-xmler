@@ -3,7 +3,7 @@
 
 	class Tag {
 
-		private $htmlSelfClosedTags = [
+		private static $htmlSelfClosingTags = [
 			'area',
 			'base',
 			'br',
