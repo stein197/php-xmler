@@ -37,4 +37,12 @@
 		public function getBeautified(): string {}
 		private function getBuilder(): Builder {}
 		private function getParent(): self {}
+
+		public static function createTagNameFromMethodName(string $name): string {
+			$namespaced = explode('_', $name);
+			$kebabCased = array_map(function($v) {
+				return strtolower(preg_replace('/[A-Z]/', '-$0', $v));
+			}, $namespaced);
+			return trim(join(':', $kebabCased), '-');
+		}
 	}
