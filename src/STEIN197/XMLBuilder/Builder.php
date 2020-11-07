@@ -27,10 +27,45 @@
 			return $this->getMinified();
 		}
 
+		// ->div(function(Builder): null|string)
+		// ->div(Builder)
+		// ->div(mixed)
 		public function __call(string $method, array $arguments): self {
+			$tagName = Tag::createTagNameFromMethodName($method);
+			$content = $attributes = [];
+			foreach ($arguments as $arg) {
+				if (is_array($arg)) {
+					$attributes = $arg;
+				} elseif (is_callable($arg)) {
+					$builder = new self;
+					$result = $arg($builder);
+					if ($result === null)
+						$content = array_merge($content, $builder->data);
+					else
+						$content[] = $result;
+				} elseif ($arg instanceof self) {
+					$content = array_merge($content, $arg->data);
+				} else {
+					$content[] = $arg;
+				}
+			}
+			$tag = new Tag($tagName, $content, $attributes);
+			$this->data[] = $tag;
 			return $this;
 		}
 
-		public function getBeautified(bool $useSelfClosing = true): string {}
-		public function getMinified(bool $useSelfClosing = false): string {}
+		// TODO
+		public function getBeautified(int $mode = self::MODE_HTML, bool $useSelfClosing = true, bool $parseXMLString = true): string {}
+		
+		public function getMinified(int $mode = self::MODE_HTML, bool $useSelfClosing = false, bool $parseXMLString = true): string {
+			$result = '';
+			foreach ($this->data as $content) {
+				if ($content instanceof Tag) {
+					$result .= $content->getMinified($mode, $useSelfClosing, $parseXMLString);
+				} else {
+					$result .= $content;
+				}
+			}
+			return $result;
+		}
 	}
