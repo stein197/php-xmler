@@ -55,7 +55,18 @@
 		}
 
 		// TODO
-		public function getBeautified(int $mode = self::MODE_HTML, bool $useSelfClosing = true, bool $parseXMLString = true): string {}
+		public function getBeautified(int $mode = self::MODE_HTML, bool $useSelfClosing = true, bool $parseXMLString = true): string {
+			$result = '';
+			foreach ($this->data as $content) {
+				if ($content instanceof Tag) {
+					$result .= $content->getBeautified($mode, $useSelfClosing, $parseXMLString);
+				} else {
+					$result .= $content;
+				}
+				$result .= "\n";
+			}
+			return $result;
+		}
 		
 		public function getMinified(int $mode = self::MODE_HTML, bool $useSelfClosing = false, bool $parseXMLString = true): string {
 			$result = '';
