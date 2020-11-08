@@ -33,60 +33,35 @@
 			$this->attributes = $attributes;
 		}
 
-		// TODO
-		public function getBeautified(int $mode = Builder::MODE_HTML, int $depth = 0): string {
+		public function stringify(int $stringify, int $mode, int $depth = 0): string {
 			$attributes = $this->stringifyAttributes();
+			$tabulation = $stringify === Builder::OUTPUT_MINIFIED ? '' : str_repeat("\t", $depth);
+			$newline = $stringify === Builder::OUTPUT_MINIFIED ? '' : "\n";
 			if ($this->content) {
-				if (sizeof($this->content) === 1 && !($this->content[0] instanceof self)) {
-					return str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}>" : "<{$this->name}>").$this->content[0]."</{$this->name}>\n";
+				if ($stringify === Builder::OUTPUT_BEAUTIFIED && sizeof($this->content) === 1 && !($this->content[0] instanceof self)) {
+					return $tabulation.($attributes ? "<{$this->name} {$attributes}>" : "<{$this->name}>").$this->content[0]."</{$this->name}>".$newline;
 				} else {
-					$result = str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}>\n" : "<{$this->name}>\n");
+					$result = $tabulation.($attributes ? "<{$this->name} {$attributes}>" : "<{$this->name}>").$newline;
 					foreach ($this->content as $content) {
 						if ($content instanceof self) {
-							$result .= $content->getBeautified($mode, $depth + 1);
+							$result .= $content->stringify($stringify, $mode, $depth + 1);
 						} else {
-							$result .= str_repeat("\t", $depth + 1).$content."\n";
+							$result .= $tabulation.$content.$newline;
 						}
 					}
-					return $result.str_repeat("\t", $depth)."</{$this->name}>\n";
+					return $result.$tabulation."</{$this->name}>".$newline;
 				}
 			} else {
 				switch ($mode) {
 					case Builder::MODE_HTML:
 						if (in_array($this->name, self::$htmlSelfClosingTags)) {
-							return str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}/>\n" : "<{$this->name}/>\n");
+							$slash = $stringify === Builder::OUTPUT_MINIFIED ? '' : '/';
+							return $tabulation.($attributes ? "<{$this->name} {$attributes}{$slash}>" : "<{$this->name}{$slash}>").$newline;
 						} else {
-							return str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}></{$this->name}>\n" : "<{$this->name}></{$this->name}>\n");
-						}
-						break;
-					case Builder::MODE_XML:
-						return str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}/>\n" : "<{$this->name}/>\n");
-				}
-			}
-		}
-
-		public function getMinified(int $mode = Builder::MODE_HTML): string {
-			$attributes = $this->stringifyAttributes();
-			if ($this->content) {
-				$result = $attributes ? "<{$this->name} {$attributes}>" : "<{$this->name}>";
-				foreach ($this->content as $content) {
-					if ($content instanceof self) {
-						$result .= $content->getMinified($mode);
-					} else {
-						$result .= $content;
-					}
-				}
-				return $result."</{$this->name}>";
-			} else {
-				switch ($mode) {
-					case Builder::MODE_HTML:
-						if (in_array($this->name, self::$htmlSelfClosingTags)) {
-							return $attributes ? "<{$this->name} {$attributes}>" : "<{$this->name}>";
-						} else {
-							return $attributes ? "<{$this->name} {$attributes}></{$this->name}>" : "<{$this->name}></{$this->name}>";
+							return $tabulation.($attributes ? "<{$this->name} {$attributes}></{$this->name}>" : "<{$this->name}></{$this->name}>").$newline;
 						}
 					case Builder::MODE_XML:
-						return $attributes ? "<{$this->name} {$attributes}/>" : "<{$this->name}/>";
+						return $tabulation.($attributes ? "<{$this->name} {$attributes}/>" : "<{$this->name}/>").$newline;
 				}
 			}
 		}
@@ -94,7 +69,7 @@
 		private function stringifyAttributes(): string {
 			$result = [];
 			foreach ($this->attributes as $k => $v)
-				$result[] = "{$k}=\"{$v}\"";
+				$result[] = $k.'="'.htmlspecialchars($v).'"';
 			return join(' ', $result);
 		}
 

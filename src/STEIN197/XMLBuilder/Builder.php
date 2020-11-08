@@ -1,17 +1,19 @@
 <?php
 	namespace STEIN197\XMLBuilder;
 
-	// TODO: parse DOMDocument::loadHTML
-	// TODO: Escape quotes
+	// TODO: parse DOMDocument::loadHTML?
 	// TODO: attributes on new line?
+	// TODO: Add CDATA?
+	// TODO: Add comments support?
 	class Builder {
 
 		public const MODE_XML = 1;
 		public const MODE_HTML = 2;
 
-		// TODO: private
-		var $data = [];
-		var $depth;
+		public const OUTPUT_MINIFIED = 1;
+		public const OUTPUT_BEAUTIFIED = 2;
+
+		private $data = [];
 
 		public function __construct(array $xmlAttributes = []) {
 			if ($xmlAttributes) {
@@ -24,12 +26,9 @@
 		}
 
 		public function __toString(): string {
-			return $this->getMinified();
+			return $this->stringify(self::OUTPUT_MINIFIED, self::MODE_HTML);
 		}
 
-		// ->div(function(Builder): null|string)
-		// ->div(Builder)
-		// ->div(mixed)
 		public function __call(string $method, array $arguments): self {
 			$tagName = Tag::createTagNameFromMethodName($method);
 			$content = $attributes = [];
@@ -54,28 +53,15 @@
 			return $this;
 		}
 
-		// TODO
-		public function getBeautified(int $mode = self::MODE_HTML): string {
+		public function stringify(int $stringify, int $mode): string {
 			$result = '';
 			foreach ($this->data as $content) {
-				if ($content instanceof Tag) {
-					$result .= $content->getBeautified($mode);
-				} else {
+				if ($content instanceof Tag)
+					$result .= $content->stringify($stringify, $mode);
+				else
 					$result .= $content;
-				}
-				$result .= "\n";
-			}
-			return $result;
-		}
-		
-		public function getMinified(int $mode = self::MODE_HTML): string {
-			$result = '';
-			foreach ($this->data as $content) {
-				if ($content instanceof Tag) {
-					$result .= $content->getMinified($mode);
-				} else {
-					$result .= $content;
-				}
+				if ($stringify === self::OUTPUT_BEAUTIFIED)
+					$result .= "\n";
 			}
 			return $result;
 		}
