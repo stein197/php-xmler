@@ -34,7 +34,7 @@
 		}
 
 		// TODO
-		public function getBeautified(int $mode = Builder::MODE_HTML, bool $useSelfClosing = false, bool $parseXMLString = true, int $depth = 0): string {
+		public function getBeautified(int $mode = Builder::MODE_HTML, int $depth = 0): string {
 			$attributes = $this->stringifyAttributes();
 			if ($this->content) {
 				if (sizeof($this->content) === 1 && !($this->content[0] instanceof self)) {
@@ -43,7 +43,7 @@
 					$result = str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}>\n" : "<{$this->name}>\n");
 					foreach ($this->content as $content) {
 						if ($content instanceof self) {
-							$result .= $content->getBeautified($mode, $useSelfClosing, $parseXMLString, $depth + 1);
+							$result .= $content->getBeautified($mode, $depth + 1);
 						} else {
 							$result .= str_repeat("\t", $depth + 1).$content."\n";
 						}
@@ -54,10 +54,7 @@
 				switch ($mode) {
 					case Builder::MODE_HTML:
 						if (in_array($this->name, self::$htmlSelfClosingTags)) {
-							if ($useSelfClosing)
-								return str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}/>\n" : "<{$this->name}/>\n");
-							else
-								return str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}>\n" : "<{$this->name}>\n");
+							return str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}/>\n" : "<{$this->name}/>\n");
 						} else {
 							return str_repeat("\t", $depth).($attributes ? "<{$this->name} {$attributes}></{$this->name}>\n" : "<{$this->name}></{$this->name}>\n");
 						}
@@ -68,13 +65,13 @@
 			}
 		}
 
-		public function getMinified(int $mode = Builder::MODE_HTML, bool $useSelfClosing = false, bool $parseXMLString = true): string {
+		public function getMinified(int $mode = Builder::MODE_HTML): string {
 			$attributes = $this->stringifyAttributes();
 			if ($this->content) {
 				$result = $attributes ? "<{$this->name} {$attributes}>" : "<{$this->name}>";
 				foreach ($this->content as $content) {
 					if ($content instanceof self) {
-						$result .= $content->getMinified($mode, $useSelfClosing, $parseXMLString);
+						$result .= $content->getMinified($mode);
 					} else {
 						$result .= $content;
 					}
@@ -84,10 +81,7 @@
 				switch ($mode) {
 					case Builder::MODE_HTML:
 						if (in_array($this->name, self::$htmlSelfClosingTags)) {
-							if ($useSelfClosing)
-								return $attributes ? "<{$this->name} {$attributes}/>" : "<{$this->name}/>";
-							else
-								return $attributes ? "<{$this->name} {$attributes}>" : "<{$this->name}>";
+							return $attributes ? "<{$this->name} {$attributes}>" : "<{$this->name}>";
 						} else {
 							return $attributes ? "<{$this->name} {$attributes}></{$this->name}>" : "<{$this->name}></{$this->name}>";
 						}

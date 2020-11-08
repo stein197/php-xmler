@@ -55,11 +55,11 @@
 		}
 
 		// TODO
-		public function getBeautified(int $mode = self::MODE_HTML, bool $useSelfClosing = true, bool $parseXMLString = true): string {
+		public function getBeautified(int $mode = self::MODE_HTML): string {
 			$result = '';
 			foreach ($this->data as $content) {
 				if ($content instanceof Tag) {
-					$result .= $content->getBeautified($mode, $useSelfClosing, $parseXMLString);
+					$result .= $content->getBeautified($mode);
 				} else {
 					$result .= $content;
 				}
@@ -68,11 +68,11 @@
 			return $result;
 		}
 		
-		public function getMinified(int $mode = self::MODE_HTML, bool $useSelfClosing = false, bool $parseXMLString = true, bool $attrsOnNewLine = false): string {
+		public function getMinified(int $mode = self::MODE_HTML): string {
 			$result = '';
 			foreach ($this->data as $content) {
 				if ($content instanceof Tag) {
-					$result .= $content->getMinified($mode, $useSelfClosing, $parseXMLString);
+					$result .= $content->getMinified($mode);
 				} else {
 					$result .= $content;
 				}
