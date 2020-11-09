@@ -45,6 +45,9 @@
 					foreach ($this->content as $content) {
 						if ($content instanceof self) {
 							$result .= $content->stringify($stringify, $mode, $depth + 1);
+						} elseif ($content instanceof Comment) {
+							if ($stringify === Builder::OUTPUT_BEAUTIFIED)
+								$result .= $tabulation.$content->stringify().$newline;
 						} else {
 							$result .= $tabulation.$content.$newline;
 						}

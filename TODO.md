@@ -8,4 +8,5 @@
 - [x] Add comments support;
 ## Bugs
 - [x] Remove redudant line feeds from beautified output;
-- [ ] Remove comments from minified output;
+- [x] Remove comments from minified output;
+- [ ] Change `Builder` constructor in order to create empty `<?xml?>` element

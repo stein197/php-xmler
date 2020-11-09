@@ -59,6 +59,9 @@
 			foreach ($this->data as $content) {
 				if ($content instanceof Tag) {
 					$result .= $content->stringify($stringify, $mode);
+				} elseif ($content instanceof Comment) {
+					if ($stringify === self::OUTPUT_BEAUTIFIED)
+						$result .= $content->stringify()."\n";
 				} else {
 					$result .= $content;
 					if ($stringify === self::OUTPUT_BEAUTIFIED)
@@ -78,7 +81,7 @@
 		}
 
 		public function comment(string $comment): self {
-			$this->data[] = "<!-- {$comment} -->";
+			$this->data[] = new Comment($comment);
 			return $this;
 		}
 
