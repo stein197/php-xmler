@@ -57,12 +57,13 @@
 		public function stringify(int $stringify, int $mode): string {
 			$result = '';
 			foreach ($this->data as $content) {
-				if ($content instanceof Tag)
+				if ($content instanceof Tag) {
 					$result .= $content->stringify($stringify, $mode);
-				else
+				} else {
 					$result .= $content;
-				if ($stringify === self::OUTPUT_BEAUTIFIED)
-					$result .= "\n";
+					if ($stringify === self::OUTPUT_BEAUTIFIED)
+						$result .= "\n";
+				}
 			}
 			return $result;
 		}
