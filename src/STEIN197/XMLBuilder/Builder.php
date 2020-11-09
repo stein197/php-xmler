@@ -1,10 +1,6 @@
 <?php
 	namespace STEIN197\XMLBuilder;
 
-	// TODO: parse DOMDocument::loadHTML?
-	// TODO: attributes on new line?
-	// TODO: Add CDATA?
-	// TODO: Add comments support?
 	/**
 	 * The main class of the package.
 	 */
