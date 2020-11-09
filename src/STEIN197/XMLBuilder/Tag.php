@@ -74,10 +74,11 @@
 		}
 
 		public static function createTagNameFromMethodName(string $name): string {
-			$namespaced = explode('_', $name);
-			$kebabCased = array_map(function($v) {
+			$namespaced = preg_split('/(?<=[[:alnum:]])_(?=[[:alnum:]])/', $name);
+			$cased = array_map(function($v) {
+				$v = str_replace('__', '_', $v);
 				return strtolower(preg_replace('/[A-Z]/', '-$0', $v));
 			}, $namespaced);
-			return trim(join(':', $kebabCased), '-');
+			return trim(join(':', $cased), '-');
 		}
 	}

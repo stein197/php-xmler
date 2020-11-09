@@ -34,6 +34,10 @@
 					'name:spaced-kebabed',
 					Tag::createTagNameFromMethodName('name_spacedKebabed')
 				],
+				[
+					'under_scored',
+					Tag::createTagNameFromMethodName('under__scored')
+				]
 			];
 		}
 	}

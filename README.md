@@ -39,6 +39,12 @@ To create namespaced element, call a method in snake_case:
 ->snake_cased(/* ... */); // -> <snake:cased/>
 ```
 
+If you need to place underscore, double the `_` sign:
+```PHP
+(new Builder)
+->under__score(/* ... */) // -> <under_score/>
+```
+
 To create `<?xml?>` element, pass an array of attributes to the constructor:
 ```PHP
 echo (new Builder(['version' => '1.0'])); /* <?xml version="1.0"?> */
