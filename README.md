@@ -42,8 +42,15 @@ To create namespaced element, call a method in snake_case:
 If you need to place underscore, double the `_` sign:
 ```PHP
 (new Builder)
-->under__score(/* ... */) // -> <under_score/>
+->under__score(/* ... */); // -> <under_score/>
 ```
+
+If you need tag which name contains invalid characters for PHP method, or if it points to already existing method, call `tag()` method. The first argument is tag name others could be callbacks, attributes etc.:
+```PHP
+(new Builder)
+->tag('custom.TagName_', ['attr' => 'value']); // -> <custom.tagname attr="value"/>
+```
+All tag names are lowercased.
 
 To create `<?xml?>` element, pass an array of attributes to the constructor:
 ```PHP

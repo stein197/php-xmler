@@ -49,7 +49,33 @@
 		 * @return self Builder to chain tag methods.
 		 */
 		public function __call(string $method, array $arguments): self {
-			$tagName = Tag::createTagNameFromMethodName($method);
+			return $this->makeNode(Tag::createTagNameFromMethodName($method), ...$arguments);
+		}
+
+		/**
+		 * Stringifies the builder's data.
+		 * @param int $stringify One of the OUTPUT_* constants.
+		 * @param int $stringify One of the MODE_* constants.
+		 * @return string String representation of the inner structure.
+		 */
+		public function stringify(int $stringify, int $mode): string {
+			$result = '';
+			foreach ($this->data as $content) {
+				if ($content instanceof Tag)
+					$result .= $content->stringify($stringify, $mode);
+				else
+					$result .= $content;
+				if ($stringify === self::OUTPUT_BEAUTIFIED)
+					$result .= "\n";
+			}
+			return $result;
+		}
+
+		public function tag(string $tagName, ...$arguments): self {
+			return $this->makeNode(strtolower($tagName), ...$arguments);
+		}
+
+		private function makeNode(string $tagName, ...$arguments): self {
 			$content = $attributes = [];
 			foreach ($arguments as $arg) {
 				if (is_array($arg)) {
@@ -70,24 +96,5 @@
 			$tag = new Tag($tagName, $content, $attributes);
 			$this->data[] = $tag;
 			return $this;
-		}
-
-		/**
-		 * Stringifies the builder's data.
-		 * @param int $stringify One of the OUTPUT_* constants.
-		 * @param int $stringify One of the MODE_* constants.
-		 * @return string String representation of the inner structure.
-		 */
-		public function stringify(int $stringify, int $mode): string {
-			$result = '';
-			foreach ($this->data as $content) {
-				if ($content instanceof Tag)
-					$result .= $content->stringify($stringify, $mode);
-				else
-					$result .= $content;
-				if ($stringify === self::OUTPUT_BEAUTIFIED)
-					$result .= "\n";
-			}
-			return $result;
 		}
 	}
