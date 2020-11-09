@@ -1,7 +1,11 @@
 # TODO
+## Features
 - [x] Add underscored tag creation support;
 - [x] Add functionality to create custom tag names which can't be created from method name;
 - [ ] Parse string content to node tree;
 - [ ] Output attributes on new lines when Builder::OUTPUT_BEAUTIFIED;
-- [ ] Add CDATA tag support;
-- [ ] Add comments support;
+- [x] Add CDATA tag support;
+- [x] Add comments support;
+## Bugs
+- [x] Remove redudant line feeds from beautified output;
+- [ ] Remove comments from minified output;

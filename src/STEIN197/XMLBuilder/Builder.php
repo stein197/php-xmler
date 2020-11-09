@@ -72,6 +72,16 @@
 			return $this->makeNode(strtolower($tagName), ...$arguments);
 		}
 
+		public function cdata(string $cdata): self {
+			$this->data[] = "<![CDATA[{$cdata}]]>";
+			return $this;
+		}
+
+		public function comment(string $comment): self {
+			$this->data[] = "<!-- {$comment} -->";
+			return $this;
+		}
+
 		private function makeNode(string $tagName, ...$arguments): self {
 			$content = $attributes = [];
 			foreach ($arguments as $arg) {
