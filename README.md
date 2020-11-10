@@ -50,7 +50,13 @@ If you need tag which name contains invalid characters for PHP method, or if it 
 (new Builder)
 ->tag('custom.TagName_', ['attr' => 'value']); // -> <custom.tagname attr="value"/>
 ```
-All tag names are lowercased.
+All tag names are lowercased. To create CDATA section and XML comment call these methods respectively:
+```PHP
+(new Builder)
+->cdata('cdata') // <![CDATA[cdata]]>
+->comment('comment'); // <!-- comment -->
+```
+Comments are cut out in minified output.
 
 To create `<?xml?>` element, pass an array of attributes to the constructor:
 ```PHP
