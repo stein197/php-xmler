@@ -45,7 +45,7 @@
 		 * @return self Builder to chain tag methods.
 		 */
 		public function __call(string $method, array $arguments): self {
-			return $this->makeNode(Tag::createTagNameFromMethodName($method), ...$arguments);
+			return $this->makeNode(XMLNode::createTagNameFromMethodName($method), ...$arguments);
 		}
 
 		/**
@@ -54,20 +54,10 @@
 		 * @param int $stringify One of the MODE_* constants.
 		 * @return string String representation of the inner structure.
 		 */
-		public function stringify(int $stringify, int $mode): string {
+		public function stringify(int $output, int $mode): string {
 			$result = '';
-			foreach ($this->data as $content) {
-				if ($content instanceof Tag) {
-					$result .= $content->stringify($stringify, $mode);
-				} elseif ($content instanceof Comment) {
-					if ($stringify === self::OUTPUT_BEAUTIFIED)
-						$result .= $content->stringify()."\n";
-				} else {
-					$result .= $content;
-					if ($stringify === self::OUTPUT_BEAUTIFIED)
-						$result .= "\n";
-				}
-			}
+			foreach ($this->data as $content)
+				$result .= $content->stringify($output, $mode);
 			return $result;
 		}
 
@@ -76,12 +66,12 @@
 		}
 
 		public function cdata(string $cdata): self {
-			$this->data[] = "<![CDATA[{$cdata}]]>";
+			$this->data[] = new CDataNode($cdata);
 			return $this;
 		}
 
 		public function comment(string $comment): self {
-			$this->data[] = new Comment($comment);
+			$this->data[] = new CommentNode($comment);
 			return $this;
 		}
 
@@ -96,15 +86,14 @@
 					if ($result === null)
 						$content = array_merge($content, $builder->data);
 					else
-						$content[] = $result;
+						$content[] = new TextNode((string) $result);
 				} elseif ($arg instanceof self) {
 					$content = array_merge($content, $arg->data);
 				} else {
-					$content[] = $arg;
+					$content[] = new TextNode((string) $arg);
 				}
 			}
-			$tag = new Tag($tagName, $content, $attributes);
-			$this->data[] = $tag;
+			$this->data[] = new XMLNode($tagName, $content, $attributes);
 			return $this;
 		}
 	}

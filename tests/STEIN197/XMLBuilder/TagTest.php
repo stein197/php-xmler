@@ -16,27 +16,27 @@
 			return [
 				[
 					'tag',
-					Tag::createTagNameFromMethodName('tag')
+					XMLNode::createTagNameFromMethodName('tag')
 				],
 				[
 					'a',
-					Tag::createTagNameFromMethodName('a')
+					XMLNode::createTagNameFromMethodName('a')
 				],
 				[
 					'kebab-cased',
-					Tag::createTagNameFromMethodName('kebabCased')
+					XMLNode::createTagNameFromMethodName('kebabCased')
 				],
 				[
 					'name:spaced',
-					Tag::createTagNameFromMethodName('name_spaced')
+					XMLNode::createTagNameFromMethodName('name_spaced')
 				],
 				[
 					'name:spaced-kebabed',
-					Tag::createTagNameFromMethodName('name_spacedKebabed')
+					XMLNode::createTagNameFromMethodName('name_spacedKebabed')
 				],
 				[
 					'under_scored',
-					Tag::createTagNameFromMethodName('under__scored')
+					XMLNode::createTagNameFromMethodName('under__scored')
 				]
 			];
 		}
