@@ -2,5 +2,6 @@
 ## Features
 - [ ] Parse string content to node tree;
 - [ ] SVG tags always output in XML mode;
-- [ ] Add conditional comments for HTML;
+- [x] Add conditional comments for HTML;
 ## Bugs
+- [ ] Fix zero tabulations in comments;

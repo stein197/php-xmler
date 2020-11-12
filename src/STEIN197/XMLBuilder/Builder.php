@@ -75,6 +75,15 @@
 			return $this;
 		}
 
+		public function if(string $condition, ...$content): self {
+			$this->data[] = new ConditionalComment($condition, $content);
+			return $this;
+		}
+
+		public function getTreeData(): array {
+			return $this->data;
+		}
+
 		private function makeNode(string $tagName, ...$arguments): self {
 			$content = $attributes = [];
 			foreach ($arguments as $arg) {
