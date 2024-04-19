@@ -1,4 +1,7 @@
 # Changelog
+<!-- TODO -->
+## 2.0.0
+
 ## 1.1.0
 ### Features
 - Added underscored tag creation support;
