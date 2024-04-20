@@ -67,6 +67,8 @@ class Xmler extends Stringable {
 		return $xmler;
 	}
 
+	// public static function parse(string $source): self {} ?
+
 	public static function stringify(self $xmler, array $options = self::OPTIONS_DEFAULT, int $depth = 0): string {}
 
 	public static function traverse(int $direction, callable $f): void {}
