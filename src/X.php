@@ -147,16 +147,17 @@ class X extends Stringable {
 					$result[] = $v;
 			$attributes['class'] = join(' ', $result);
 		}
-		if (isset($attributes['data']) && is_array($attributes['data'])) {
-			foreach ($attributes['data'] as $k => $v)
-				$attributes["data-{$k}"] = $v;
-			unset($attributes['data']);
-		}
-		if (isset($attributes['aria']) && is_array($attributes['aria'])) {
-			foreach ($attributes['aria'] as $k => $v)
-				$attributes["aria-{$k}"] = $v;
-			unset($attributes['aria']);
-		}
+		$attributes = self::processComplexAttributes($attributes, 'data');
+		$attributes = self::processComplexAttributes($attributes, 'aria');
+		return $attributes;
+	}
+
+	private static function processComplexAttributes(array $attributes, string $name): array {
+		if (!is_array(@$attributes[$name]))
+			return $attributes;
+		foreach ($attributes[$name] as $k => $v)
+			$attributes["{$name}-{$k}"] = $v;
+		unset($attributes[$name]);
 		return $attributes;
 	}
 
