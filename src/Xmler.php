@@ -22,6 +22,7 @@ class Xmler extends Stringable {
 		'cdata' => true,
 		'cdataNewLine' => true,
 		'closeVoid' => true,
+		'emptyAttributes' => 'preserve', // preserve, remove, keepOnlyName
 		'encode' => true,
 		'encoding' => 'UTF-8',
 		'indent' => "\t",
@@ -29,6 +30,7 @@ class Xmler extends Stringable {
 		'indentCloseBracket' => '', // false, 'newline-same', 'newline-back-indent'
 		'indentTextContent' => false,
 		'inlineElements' => ['br', 'hr', 'span'],
+		'leafNodes' => 'close', // selfclose, doubleclose, delete
 		'mode' => 'html', // html, xhtml, xml
 		'nl' => "\n", // \n, \r\n, \r
 		'singleTextOnNewLine' => false,
@@ -36,15 +38,26 @@ class Xmler extends Stringable {
 		'uppercase' => false,
 	];
 
+	/** @var Node[] */
 	private array $children = [];
 
 	private function __construct(public readonly array $data) {}
 
 	public function __call(string $name, array $args): void {}
 
-	public function __clone(): void {}
+	public function __clone(): void {
+		foreach ($this->children as &$child)
+			$child = clone $child;
+	}
 
-	public function __invoke(string | self | Node ...$args): void {}
+	public function __invoke(string | self | Node ...$args): void {
+		foreach ($args as $arg)
+			array_push($this->children, match (true) {
+				is_string($arg) => new TextNode($arg),
+				$arg instanceof self => (clone $arg)->children,
+				$arg instanceof Node => $arg
+			});
+	}
 
 	public function __toString(): string {
 		return self::stringify($this, self::OPTIONS_DEFAULT, 0);
