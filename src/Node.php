@@ -23,6 +23,10 @@ abstract class Node {
 		return $i;
 	}
 
+	public function leaf(): bool {
+		return !$this->children;
+	}
+
 	public function parent(): ?self {
 		return $this->parent;
 	}
