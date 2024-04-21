@@ -4,9 +4,15 @@ namespace Stein197\Xmler;
 use Closure;
 use InvalidArgumentException;
 use Stringable;
+use function array_map;
+use function array_push;
 use function is_array;
+use function is_callable;
+use function is_numeric;
+use function is_string;
+use function join;
 
-class Xmler extends Stringable {
+class X extends Stringable {
 
 	public const TRAVERSE_DEPTH_LTR = 1;
 	public const TRAVERSE_DEPTH_RTL = 2;
@@ -43,7 +49,12 @@ class Xmler extends Stringable {
 
 	private function __construct(public readonly array $data) {}
 
-	public function __call(string $name, array $args): void {}
+	public function __call(string $name, array $args): void {
+		[$attributes, $content] = self::getAttributesAndContent(...$args);
+		$attributes = self::processAttributes($attributes);
+		$content = self::processContent($this, $content);
+		$this->children[] = new ElementNode($name, $attributes, $content);
+	}
 
 	public function __clone(): void {
 		foreach ($this->children as &$child)
@@ -75,14 +86,72 @@ class Xmler extends Stringable {
 		[$data, $f] = is_array($a) ? [$a, $b] : [[], $a];
 		if (!$f)
 			throw new InvalidArgumentException("No builder callback was provided");
-		$xmler = new self($data);
-		Closure::fromCallable($f)->bindTo($xmler)($xmler);
-		return $xmler;
+		$x = new self($data);
+		Closure::fromCallable($f)->bindTo($x)($x);
+		return $x;
 	}
 
 	// public static function parse(string $source): self {} ?
 
-	public static function stringify(self $xmler, array $options = self::OPTIONS_DEFAULT, int $depth = 0): string {}
+	public static function stringify(self $x, array $options = self::OPTIONS_DEFAULT, int $depth = 0): string {}
 
 	public static function traverse(int $direction, callable $f): void {}
+
+	private static function getAttributesAndContent(mixed ...$args): array {
+		return match (true) {
+			isset($args[0]) && is_array($args[0]) && isset($args[1]) && self::isContent($args[1]) => [$args[0], $args[1]],
+			isset($args[0]) && self::isContent($args[1]) => [[], $args[0]],
+			default => throw new InvalidArgumentException("The first argument should be either an array of a function, the second argument should be a function or be omitted")
+		};
+	}
+
+	private static function isContent(mixed $arg): bool {
+		return is_callable($arg) || $arg instanceof self;
+	}
+
+	private static function processAttributes(array $attributes): array {
+		if (isset($attributes['style']) && is_array($attributes['style'])) {
+			$result = [];
+			foreach ($attributes['style'] as $k => $v)
+				$result[] = is_string($k) ? "{$k}: {$v}" : $k;
+			$attributes['style'] = join('; ', $result);
+		}
+		if (isset($attributes['class']) && is_array($attributes['class'])) {
+			$result = [];
+			foreach ($attributes['class'] as $k => $v)
+				if (is_string($k) && $v)
+					$result[] = $k;
+				elseif (!is_string($k))
+					$result[] = $v;
+			$attributes['class'] = join(' ', $result);
+		}
+		if (isset($attributes['data']) && is_array($attributes['data'])) {
+			foreach ($attributes['data'] as $k => $v)
+				$attributes["data-{$k}"] = $v;
+			unset($attributes['data']);
+		}
+		if (isset($attributes['aria']) && is_array($attributes['aria'])) {
+			foreach ($attributes['aria'] as $k => $v)
+				$attributes["aria-{$k}"] = $v;
+			unset($attributes['aria']);
+		}
+		return $attributes;
+	}
+
+	/**
+	 * @return Node[]
+	 */
+	private static function processContent(self $self, mixed $content): array {
+		if (is_callable($content))
+			return self::new($self->data, $content)->children;
+		if ($content instanceof self)
+			return (clone $content)->children;
+		if ($content instanceof Node)
+			return [$content];
+		if (is_string($content) || is_numeric($content))
+			return [new TextNode((string) $content)];
+		if (is_array($content))
+			return array_map(fn ($item): mixed => self::processContent($self, $item), $content);
+		throw new InvalidArgumentException("Invalid content type. Allowed types are only functions, builders, nodes, arrays and stringables");
+	}
 }
