@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use Stringable;
 use function is_array;
 
-class X extends Stringable {
+class Xmler extends Stringable {
 
 	public const TRAVERSE_DEPTH_LTR = 1;
 	public const TRAVERSE_DEPTH_RTL = 2;
