@@ -14,6 +14,8 @@ final class Formatter {
 		'commentsPadding' => true,
 		'closeVoid' => true,
 		'emptyAttributes' => 'preserve', // preserve, remove, keepOnlyName
+		'emptyElements' => 'selfClose', // selfClose, pairClose (<div/>, <div></div>)
+		'emptyElementsNl' => false, // <div></div>, <div>\n</div>
 		'encode' => true,
 		'encoding' => 'UTF-8',
 		'indent' => "\t",
