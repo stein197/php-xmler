@@ -6,7 +6,6 @@ use InvalidArgumentException;
 use Stringable;
 use function array_map;
 use function array_push;
-use function htmlentities;
 use function is_array;
 use function is_callable;
 use function is_numeric;
@@ -22,29 +21,7 @@ class X extends Stringable {
 	public const TRAVERSE_BREADTH_LTR = 3;
 	public const TRAVERSE_BREADTH_RTL = 4;
 
-	// https://www.w3.org/TR/2011/WD-html-markup-20110113/syntax.html#void-element
-	private const VOID_ELEMENTS = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
-	private const OPTIONS_DEFAULT = [
-		'beautify' => true,
-		'comments' => true,
-		'commentsPadding' => true,
-		'closeVoid' => true,
-		'emptyAttributes' => 'preserve', // preserve, remove, keepOnlyName
-		'encode' => true,
-		'encoding' => 'UTF-8',
-		'indent' => "\t",
-		'indentAttributes' => false,
-		'indentCloseBracket' => '', // false, 'newline-same', 'newline-back-indent'
-		'indentTextContent' => false,
-		'inlineElements' => ['br', 'hr', 'span'],
-		'leafNodes' => 'close', // selfclose, doubleclose, delete
-		'mode' => 'html', // html, xhtml, xml
-		'nl' => "\n", // \n, \r\n, \r
-		'singleTextOnNewLine' => false,
-		'spaceBeforeSelfClose' => true,
-		'uppercase' => false,
-	];
-
+	// TODO: Replace with RootNode?
 	/** @var Node[] */
 	private array $content = [];
 
@@ -72,7 +49,7 @@ class X extends Stringable {
 	}
 
 	public function __toString(): string {
-		return self::stringify($this, self::OPTIONS_DEFAULT, 0);
+		return self::stringify($this);
 	}
 
 	public static function cdata(string $text): CDataNode {
@@ -94,26 +71,12 @@ class X extends Stringable {
 		return $x;
 	}
 
-	public static function stringify(self $x, array $options = self::OPTIONS_DEFAULT, int $depth = 0): string {
-		$options = $options === self::OPTIONS_DEFAULT ? $options : [...self::OPTIONS_DEFAULT, ...$options];
+	public static function stringify(self $x, array $options = [], int $depth = 0): string {
+		$formatter = new Formatter($options);
 		$result = '';
-		$indent = $options['beautify'] ? $options['indent'] : '';
-		$nl = $options['beautify'] ? $options['nl'] : '';
-		foreach ($x->content as $node) {
-			if ($node instanceof TextNode) {
-				$result .= $indent . htmlentities($node->data) . $nl;
-			} elseif ($node instanceof CommentNode) {
-				if (!$options['comments'])
-					continue;
-				$space = $options['beautify'] && $options['commentsPadding'] ? ' ' : '';
-				$result .= $indent . '<!--' . $space . htmlentities($node->data) . $space . '-->' . $nl;
-			} elseif ($node instanceof CDataNode) {
-				$result .= $indent . '<![CDATA[' . $node->data . ']]>' . $nl;
-			} elseif ($node instanceof ElementNode) {
-				// TODO
-			}
-		}
-		return mb_convert_encoding($result, $options['encoding']);
+		foreach ($x->content as $node)
+			$result .= $node->stringify($formatter, $depth);
+		return mb_convert_encoding($result, $formatter->getEncoding());
 	}
 
 	// TODO

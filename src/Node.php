@@ -37,4 +37,6 @@ abstract class Node {
 			$obj = $obj->parent;
 		return $obj;
 	}
+
+	public abstract function stringify(Formatter $formatter, int $depth): string;
 }
