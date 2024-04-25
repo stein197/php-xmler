@@ -11,24 +11,25 @@ final class Formatter {
 	private const OPTIONS_DEFAULT = [
 		'beautify' => true,
 		'comments' => true,
-		'commentsPadding' => true,
-		'closeVoid' => true,
-		'emptyAttributes' => 'preserve', // preserve, remove, keepOnlyName
-		'emptyElements' => 'selfClose', // selfClose, pairClose (<div/>, <div></div>)
+		'commentsPadding' => true, // <!-- ... -->, <!--...-->
+		'closeVoid' => true, // <img />, <img>
+		'emptyAttributes' => 'preserve', // attr, attr="", ''
+		'emptyElements' => 'selfClose', // <div/>, <div></div>
 		'emptyElementsNl' => false, // <div></div>, <div>\n</div>
-		'encode' => true,
+		'encode' => true, // &, &amp;
 		'encoding' => 'UTF-8',
 		'indent' => "\t",
-		'indentAttributes' => false,
-		'indentCloseBracket' => '', // false, 'newline-same', 'newline-back-indent'
+		'indentAttributes' => false, // <div attr>, <div\nattr>
+		'indentCloseBracket' => '', // <div>, <div\n>, <div\n\t>
+		'indentSelfClosedBracked' => true, // <hr/>, <hr />
 		'indentTextContent' => false,
-		'inlineElements' => ['br', 'hr', 'span'],
-		'leafNodes' => 'close', // selfclose, doubleclose, delete
+		'inlineElements' => ['br', 'hr', 'span'], // text<br/>content
+		'leafNodes' => 'close', // selfclose, doubleclose, delete / <div/>, <div></div>, ''
 		'mode' => 'html', // html, xhtml, xml
 		'nl' => "\n", // \n, \r\n, \r
-		'singleTextOnNewLine' => false,
-		'spaceBeforeSelfClose' => true,
-		'uppercase' => false,
+		'singleTextOnNewLine' => false, // <p>text</p>, <p>\n\ttext\n</p>
+		'uppercaseAttributeNames' => false, // <div ATTR>
+		'uppercaseElementNames' => false, // <DIV attr>
 	];
 
 	public function __construct(private readonly array $options) {
