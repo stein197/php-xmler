@@ -13,7 +13,6 @@ use function is_string;
 use function join;
 use function mb_convert_encoding;
 
-// The creation is static now
 class X extends Stringable {
 
 	public const TRAVERSE_DEPTH_LTR = 1;
@@ -37,6 +36,10 @@ class X extends Stringable {
 	public function __clone(): void {
 		foreach ($this->content as &$child)
 			$child = clone $child;
+	}
+
+	public function __get(string $name): mixed {
+		return @$this->data[$name];
 	}
 
 	public function __invoke(string | self | Node ...$args): void {
