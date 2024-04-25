@@ -18,7 +18,7 @@ final class Formatter {
 		'emptyElementsNl' => false, // <div></div>, <div>\n</div>
 		'encode' => true, // &, &amp;
 		'encoding' => 'UTF-8',
-		'ifComment' => 'indent', // <!--[if]>..., <!--[if]>\n..., <!--[if]>\n\t...
+		'ifComment' => 'indent', // <!--[if]>..., <!--[if]>\n..., <!--[if]>\n\t..., false
 		'indent' => "\t",
 		'indentAttributes' => false, // <div attr>, <div\nattr>
 		'indentCloseBracket' => '', // <div>, <div\n>, <div\n\t>
@@ -59,8 +59,12 @@ final class Formatter {
 		return $this->canBeautify() ? $this->options['nl'] : '';
 	}
 
-	public function hasComments(): bool {
-		return $this->options['comments'];
+	public function isNodeTypeEnabled(string $class): bool {
+		return match ($class) {
+			IfCommentNode::class => !!$this->options['ifComments'],
+			CommentNode::class => $this->options['comments'],
+			default => true
+		};
 	}
 
 	private function canBeautify(): bool {

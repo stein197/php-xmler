@@ -80,7 +80,7 @@ class X extends Stringable {
 		$formatter = new Formatter($options);
 		$result = '';
 		foreach ($x->content as $node)
-			$result .= $node->stringify($formatter, $depth);
+			$result .= $node->tryStringify($formatter, $depth);
 		return mb_convert_encoding($result, $formatter->getEncoding());
 	}
 

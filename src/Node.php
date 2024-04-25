@@ -38,5 +38,9 @@ abstract class Node {
 		return $obj;
 	}
 
-	public abstract function stringify(Formatter $formatter, int $depth): string;
+	public function tryStringify(Formatter $formatter, int $depth): string {
+		return $formatter->isNodeTypeEnabled(static::class) ? $this->stringify($formatter, $depth) : '';
+	}
+
+	protected abstract function stringify(Formatter $formatter, int $depth): string;
 }
