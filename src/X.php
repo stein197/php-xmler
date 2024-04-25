@@ -60,6 +60,11 @@ class X extends Stringable {
 		return new CommentNode($text);
 	}
 
+	// TODO
+	public static function if(string $condition, string | self | Node | callable $content): IfCommentNode {
+		// return new IfCommentNode($condition, self::processContent($content));
+	}
+
 	public static function new(array | callable $a, ?callable $b = null): self {
 		[$data, $f] = is_array($a) ? [$a, $b] : [[], $a];
 		if (!$f)

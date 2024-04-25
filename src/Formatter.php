@@ -18,6 +18,7 @@ final class Formatter {
 		'emptyElementsNl' => false, // <div></div>, <div>\n</div>
 		'encode' => true, // &, &amp;
 		'encoding' => 'UTF-8',
+		'ifComment' => 'indent', // <!--[if]>..., <!--[if]>\n..., <!--[if]>\n\t...
 		'indent' => "\t",
 		'indentAttributes' => false, // <div attr>, <div\nattr>
 		'indentCloseBracket' => '', // <div>, <div\n>, <div\n\t>
