@@ -30,6 +30,7 @@ final class Formatter {
 		'leafNodes' => 'close', // selfclose, doubleclose, delete / <div/>, <div></div>, ''
 		'mode' => 'html', // html, xhtml, xml
 		'nl' => "\n", // \n, \r\n, \r
+		'quotes' => '"', // ", ', false
 		'singleTextOnNewLine' => false, // <p>text</p>, <p>\n\ttext\n</p>
 		'uppercaseAttributeNames' => false, // <div ATTR>
 		'uppercaseElementNames' => false, // <DIV attr>
