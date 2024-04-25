@@ -21,7 +21,9 @@ final class Formatter {
 		'indent' => "\t",
 		'indentAttributes' => false, // <div attr>, <div\nattr>
 		'indentCloseBracket' => '', // <div>, <div\n>, <div\n\t>
+		'indentScriptContent' => true,
 		'indentSelfClosedBracked' => true, // <hr/>, <hr />
+		'indentStyleContent' => true,
 		'indentTextContent' => false,
 		'inlineElements' => ['br', 'hr', 'span'], // text<br/>content
 		'leafNodes' => 'close', // selfclose, doubleclose, delete / <div/>, <div></div>, ''
