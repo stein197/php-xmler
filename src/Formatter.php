@@ -61,7 +61,9 @@ final class Formatter {
 		'uppercaseElementNames' => false, // <DIV attr>
 	];
 
-	public function __construct(private readonly array $options) {
+	private readonly array $options;
+
+	public function __construct(array $options) {
 		$this->options = $options === self::OPTIONS_DEFAULT ? self::OPTIONS_DEFAULT : [...self::OPTIONS_DEFAULT, ...$options];
 	}
 

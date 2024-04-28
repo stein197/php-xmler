@@ -7,6 +7,8 @@ final class IfCommentNode extends Node {
 
 	// TODO
 	public function stringify(Formatter $formatter, int $depth): string {
+		if (!$formatter->isNodeTypeEnabled(static::class))
+			return '';
 		return '';
 	}
 }
