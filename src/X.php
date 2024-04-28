@@ -318,6 +318,6 @@ class X implements Stringable {
 			return self::new($data, $content)->content;
 		if (is_string($content) || is_numeric($content))
 			return [new TextNode((string) $content)];
-		throw new InvalidArgumentException("Invalid content type. Allowed types are only functions, builders, nodes, arrays and stringables", self::ERR_CONTENT_TYPE_MISMATCH);
+		throw new InvalidArgumentException("Invalid content type. Allowed types are only functions, builders, nodes and stringables", self::ERR_ARGS_MISMATCH);
 	}
 }
