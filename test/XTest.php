@@ -227,6 +227,22 @@ final class XTest extends TestCase {
 
 	#region $this
 
+	#[Test]
+	public function this_is_equal_to_the_first_argument(): void {
+		$self = $this;
+		X::new(function ($b) use ($self) {
+			$self->assertTrue($b === $this);
+		});
+	}
+
+	#[Test]
+	public function this_can_be_used_instead(): void {
+		$this->assertEquals('<html></html>string', (string) X::new(function () {
+			$this->html();
+			$this('string');
+		}));
+	}
+
 	#endregion
 
 	#region Formatter
