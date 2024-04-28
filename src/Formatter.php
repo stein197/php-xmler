@@ -9,30 +9,55 @@ final class Formatter {
 	// https://www.w3.org/TR/2011/WD-html-markup-20110113/syntax.html#void-element
 	private const VOID_ELEMENTS = ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 	private const OPTIONS_DEFAULT = [
-		'beautify' => true,
-		'comments' => true,
+		// TODO
+		'beautify' => false,
+		// TODO
+		'comments' => false,
+		// TODO
 		'commentsPadding' => true, // <!-- ... -->, <!--...-->
+		// TODO
 		'closeVoid' => true, // <img />, <img>
+		// TODO
 		'emptyAttributes' => 'preserve', // attr, attr="", ''
+		// TODO
 		'emptyElements' => 'selfClose', // <div/>, <div></div>
+		// TODO
 		'emptyElementsNl' => false, // <div></div>, <div>\n</div>
+		// TODO
 		'encode' => true, // &, &amp;
+		// TODO
 		'encoding' => 'UTF-8',
+		// TODO
 		'ifComment' => 'indent', // <!--[if]>..., <!--[if]>\n..., <!--[if]>\n\t..., false
+		// TODO
 		'indent' => "\t",
+		// TODO
 		'indentAttributes' => false, // <div attr>, <div\nattr>
+		// TODO
 		'indentCloseBracket' => '', // <div>, <div\n>, <div\n\t>
+		// TODO
 		'indentScriptContent' => true,
+		// TODO
 		'indentSelfClosedBracked' => true, // <hr/>, <hr />
+		// TODO
 		'indentStyleContent' => true,
+		// TODO
 		'indentTextContent' => false,
+		// TODO
 		'inlineElements' => ['br', 'hr', 'span'], // text<br/>content
+		// TODO
 		'leafNodes' => 'close', // selfclose, doubleclose, delete / <div/>, <div></div>, ''
+		// TODO
 		'mode' => 'html', // html, xhtml, xml
+		// TODO
 		'nl' => "\n", // \n, \r\n, \r
+		// TODO
 		'quotes' => '"', // ", ', false
+		// TODO
 		'singleTextOnNewLine' => false, // <p>text</p>, <p>\n\ttext\n</p>
+		// TODO
 		'uppercaseAttributeNames' => false, // <div ATTR>
+		// TODO
 		'uppercaseElementNames' => false, // <DIV attr>
 	];
 
