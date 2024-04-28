@@ -110,6 +110,9 @@ class X implements Stringable {
 		$this->content[] = new ElementNode($name, $attributes, $content);
 	}
 
+	/**
+	 * Perform a complete deep cloning.
+	 */
 	public function __clone(): void {
 		foreach ($this->content as &$child)
 			$child = clone $child;

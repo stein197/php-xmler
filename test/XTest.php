@@ -128,7 +128,15 @@ final class XTest extends TestCase {
 
 	#endregion
 
-	#region __clone() TODO
+	#region __clone()
+
+	public function __clone_should_work(): void {
+		$x = X::new(function () {
+			$this->html();
+		});
+		$xClone = clone $x;
+		$this->assertEquals((string) $x, (string) $xClone);
+	}
 
 	#endregion
 
@@ -331,10 +339,6 @@ final class XTest extends TestCase {
 			$this('string');
 		}));
 	}
-
-	#endregion
-
-	#region Formatter
 
 	#endregion
 }
