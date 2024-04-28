@@ -211,10 +211,33 @@ class X implements Stringable {
 		return new IfCommentNode($condition, self::processContent([], $content));
 	}
 
+	/**
+	 * The main function to create an XML structure. The method has two signature:
+	 * - new(array $data, callable $f)
+	 * - new(callable $f)
+	 * 
+	 * The first signature uses the first argument as an array of variables that can be used later deeply in the
+	 * structure. The second one uses no variables.
+	 * @param array|callable $a An array of variables or a builder function.
+	 * @param null|callable $b An builder function or `null` if 
+	 * @return X An XML structure.
+	 * @throws InvalidArgumentException If no builder function was provided.
+	 * ```php
+	 * // Use the first argument as an array of variables
+	 * X::new(['a' => 1], function ($b) {
+	 * 	$b->html($b->a); // <html>1</html>
+	 * });
+	 * 
+	 * // Use only the builder function
+	 * X::new(function ($b) {
+	 * 	$b->html($b->a); // <html />
+	 * });
+	 * ```
+	 */
 	public static function new(array | callable $a, ?callable $b = null): self {
 		[$data, $f] = is_array($a) ? [$a, $b] : [[], $a];
 		if (!$f)
-			throw new InvalidArgumentException("No builder callback was provided", self::ERR_NO_FUNCTION);
+			throw new InvalidArgumentException('No builder callback was provided', self::ERR_NO_FUNCTION);
 		$x = new self($data);
 		$result = Closure::fromCallable($f)->bindTo($x)($x);
 		if (is_string($result))

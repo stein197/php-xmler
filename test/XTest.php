@@ -281,7 +281,28 @@ final class XTest extends TestCase {
 
 	#endregion
 
-	#region new() TODO
+	#region new()
+
+	#[Test]
+	public function new_when_only_a_single_argument_is_used(): void {
+		$this->assertEquals('<html></html>', (string) X::new(function () {
+			$this->html();
+		}));
+	}
+
+	#[Test]
+	public function new_when_only_two_arguments_are_used(): void {
+		$this->assertEquals('<html>1</html>', (string) X::new(['a' => 1], function () {
+			$this->html($this->a);
+		}));
+	}
+
+	#[Test]
+	public function new_should_throw_an_exception_when_no_callback_is_provided(): void {
+		$this->expectException(InvalidArgumentException::class);
+		$this->expectExceptionCode(X::ERR_NO_FUNCTION);
+		X::new([]);
+	}
 
 	#endregion
 
