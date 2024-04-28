@@ -124,7 +124,30 @@ final class XTest extends TestCase {
 
 	#endregion
 
-	#region __get() TODO
+	#region __get()
+
+	#[Test]
+	public function __get_should_return_null_when_data_does_not_exist(): void {
+		$this->assertEquals('<html></html>', (string) X::new(function ($b) {
+			$b->html($b->a);
+		}));
+	}
+
+	#[Test]
+	public function __get_should_return_a_value_by_a_key(): void {
+		$this->assertEquals('<html>1</html>', (string) X::new(['a' => 1], function ($b) {
+			$b->html($b->a);
+		}));
+	}
+
+	#[Test]
+	public function __get_should_pass_data_further(): void {
+		$this->assertEquals('<html><body>1</body></html>', (string) X::new(['a' => 1], function ($b) {
+			$b->html(function ($b) {
+				$b->body($b->a);
+			});
+		}));
+	}
 
 	#endregion
 
