@@ -4,6 +4,7 @@ namespace Stein197\Xmler;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use TypeError;
 
 final class XTest extends TestCase {
 
@@ -151,11 +152,45 @@ final class XTest extends TestCase {
 
 	#endregion
 
-	#region __invoke() TODO
+	#region __invoke()
 
-	#endregion
+	#[Test]
+	public function __invoke_should_append_a_string(): void {
+		$this->assertEquals('<html>Text</html>', (string) X::new(function ($b) {
+			$b->html(function ($b) {
+				$b('Text');
+			});
+		}));
+	}
 
-	#region __toString() TODO
+	#[Test]
+	public function __invoke_should_append_a_node(): void {
+		$this->assertEquals('<html>Text</html>', (string) X::new(function ($b) {
+			$b->html(function ($b) {
+				$b(new TextNode('Text'));
+			});
+		}));
+	}
+
+	#[Test]
+	public function __invoke_should_append_another_X(): void {
+		$this->assertEquals('<html><body></body></html>', (string) X::new(function ($b) {
+			$b->html(function ($b) {
+				$x = X::new(function ($b) {
+					$b->body();
+				});
+				$b($x);
+			});
+		}));
+	}
+
+	#[Test]
+	public function __invoke_should_throw_an_exception_when_invalid_type(): void {
+		$this->expectException(TypeError::class);
+		X::new(function ($b) {
+			$b([]);
+		});
+	}
 
 	#endregion
 
