@@ -201,15 +201,83 @@ final class XTest extends TestCase {
 
 	#endregion
 
-	#region cdata() TODO
+	#region cdata()
+
+	#[Test]
+	public function cdata_should_work(): void {
+		$this->assertEquals('<html><![CDATA[Text]]></html>', (string) X::new(function () {
+			$this->html(function () {
+				$this(X::cdata('Text'));
+			});
+		}));
+	}
+	
+	#[Test]
+	public function cdata_should_not_escape_string_when_encode_is_true(): void {
+		$this->assertEquals('<html><![CDATA[Text]]></html>', X::stringify(X::new(function () {
+			$this->html(function () {
+				$this(X::cdata('Text'));
+			});
+		}), ['encode' => true]));
+	}
 
 	#endregion
 
-	#region comment() TODO
+	#region comment()
+
+	#[Test]
+	public function comment_should_work(): void {
+		$this->assertEquals('<html><!--Comment--></html>', (string) X::new(function () {
+			$this->html(function () {
+				$this(X::comment('Comment'));
+			});
+		}));
+	}
 
 	#endregion
 
-	#region if() TODO
+	#region if()
+
+	#[Test]
+	public function if_should_work_when_content_is_string(): void {
+		$this->assertEquals('<html><!--[if lt IE 9]>Text<![endif]--></html>', (string) X::new(function () {
+			$this->html(function () {
+				$this(X::if('lt IE 9', 'Text'));
+			});
+		}));
+	}
+
+	#[Test]
+	public function if_should_work_when_content_is_X(): void {
+		$this->assertEquals('<html><!--[if lt IE 9]><body></body><![endif]--></html>', (string) X::new(function () {
+			$this->html(function () {
+				$x = X::new(function () {
+					$this->body();
+				});
+				$this(X::if('lt IE 9', $x));
+			});
+		}));
+	}
+
+	#[Test]
+	public function if_should_work_when_content_is_node(): void {
+		$this->assertEquals('<html><!--[if lt IE 9]>Text<![endif]--></html>', (string) X::new(function () {
+			$this->html(function () {
+				$this(X::if('lt IE 9', new TextNode('Text')));
+			});
+		}));
+	}
+
+	#[Test]
+	public function if_should_work_when_content_is_a_function(): void {
+		$this->assertEquals('<html><!--[if lt IE 9]><body></body><![endif]--></html>', (string) X::new(function () {
+			$this->html(function () {
+				$this(X::if('lt IE 9', function () {
+					$this->body();
+				}));
+			});
+		}));
+	}
 
 	#endregion
 

@@ -106,7 +106,7 @@ class X implements Stringable {
 	public function __call(string $name, array $args): void {
 		[$attributes, $content] = self::getAttributesAndContent(...$args);
 		$attributes = self::processAttributes($attributes);
-		$content = self::processContent($this, $content);
+		$content = self::processContent($this->data, $content);
 		$this->content[] = new ElementNode($name, $attributes, $content);
 	}
 
@@ -156,17 +156,55 @@ class X implements Stringable {
 		return self::stringify($this);
 	}
 
+	/**
+	 * Add a CDATA section.
+	 * @param string $text Text inside the CDATA.
+	 * @return CDataNode CDATA node.
+	 * ```php
+	 * X::new(function ($b) {
+	 * 	$b->html(function ($b) {
+	 * 		$b(X::cdata('Text'));
+	 * 	});
+	 * }); // <html><![CDATA[Text]]></html>
+	 * ```
+	 */
 	public static function cdata(string $text): CDataNode {
 		return new CDataNode($text);
 	}
 
+	/**
+	 * Add a comment to the XML output.
+	 * @param string $text Comment string.
+	 * @return CommentNode Comment node.
+	 * ```php
+	 * X::new(function ($b) {
+	 * 	$b->html(function ($b) {
+	 * 		$b(X::comment('Comment'));
+	 * 	});
+	 * }); // <html><!--Comment--></html>
+	 * ```
+	 */
 	public static function comment(string $text): CommentNode {
 		return new CommentNode($text);
 	}
 
-	// TODO
+	/**
+	 * Add a conditional comment.
+	 * @param string $condition Condition to be used in the conditional comment.
+	 * @param string|self|Node|callable $content Content to be used inside the comment.
+	 * @return IfCommentNode If comment node.
+	 * ```php
+	 * X::new(function ($b) {
+	 * 	$b->html(function ($b) {
+	 * 		$b(X::if('lt IE 9', function ($b) {
+	 * 			$b->body();
+	 * 		}));
+	 * 	});
+	 * }); // <html><!--[if lt IE 9]><body></body><![endif]--></html>
+	 * ```
+	 */
 	public static function if(string $condition, string | self | Node | callable $content): IfCommentNode {
-		return new IfCommentNode($condition, self::processContent($content));
+		return new IfCommentNode($condition, self::processContent([], $content));
 	}
 
 	public static function new(array | callable $a, ?callable $b = null): self {
@@ -242,7 +280,7 @@ class X implements Stringable {
 	 * @return Node[]
 	 */
 	// This method is related to isContent()
-	private static function processContent(self $self, mixed $content): array {
+	private static function processContent(array $data, mixed $content): array {
 		if ($content === null)
 			return [];
 		if ($content instanceof self)
@@ -250,7 +288,7 @@ class X implements Stringable {
 		if ($content instanceof Node)
 			return [$content];
 		if (is_callable($content))
-			return self::new($self->data, $content)->content;
+			return self::new($data, $content)->content;
 		if (is_string($content) || is_numeric($content))
 			return [new TextNode((string) $content)];
 		throw new InvalidArgumentException("Invalid content type. Allowed types are only functions, builders, nodes, arrays and stringables", self::ERR_CONTENT_TYPE_MISMATCH);

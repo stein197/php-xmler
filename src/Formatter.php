@@ -12,7 +12,7 @@ final class Formatter {
 		// TODO
 		'beautify' => false,
 		// TODO
-		'comments' => false,
+		'comments' => true,
 		// TODO
 		'commentsPadding' => true, // <!-- ... -->, <!--...-->
 		// TODO
@@ -28,13 +28,15 @@ final class Formatter {
 		// TODO
 		'encoding' => 'UTF-8',
 		// TODO
-		'ifComment' => 'indent', // <!--[if]>..., <!--[if]>\n..., <!--[if]>\n\t..., false
+		'ifComments' => true,
 		// TODO
 		'indent' => "\t",
 		// TODO
 		'indentAttributes' => false, // <div attr>, <div\nattr>
 		// TODO
 		'indentCloseBracket' => '', // <div>, <div\n>, <div\n\t>
+		// TODO
+		'indentIfComment' => 'indent', // <!--[if]>..., <!--[if]>\n..., <!--[if]>\n\t..., false
 		// TODO
 		'indentScriptContent' => true,
 		// TODO
@@ -61,6 +63,8 @@ final class Formatter {
 		'uppercaseAttributeNames' => false, // <div ATTR>
 		// TODO
 		'uppercaseElementNames' => false, // <DIV attr>
+		// TODO
+		'uppercaseIfComments' => false // <!--[IF ...]>, <!--[if ...]>
 	];
 
 	private readonly array $options;
@@ -91,7 +95,7 @@ final class Formatter {
 
 	public function isNodeTypeEnabled(string $class): bool {
 		return match ($class) {
-			IfCommentNode::class => !!$this->options['ifComments'],
+			IfCommentNode::class => $this->options['ifComments'],
 			CommentNode::class => $this->options['comments'],
 			default => true
 		};
