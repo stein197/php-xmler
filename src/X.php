@@ -152,6 +152,10 @@ class X implements Stringable {
 			});
 	}
 
+	/**
+	 * Stringify the current structure. Use options by default.
+	 * @see \Stein197\Xmler\X::stringify()
+	 */
 	public function __toString(): string {
 		return self::stringify($this);
 	}
