@@ -119,6 +119,13 @@ final class XTest extends TestCase {
 		});
 	}
 
+	#[Test]
+	public function __call_with_a_custom_name(): void {
+		$this->assertEquals('<custom:tag></custom:tag>', (string) X::new(function ($b) {
+			$b->{'custom:tag'}();
+		}));
+	}
+
 	#endregion
 
 	#region __clone() TODO
