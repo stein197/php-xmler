@@ -50,6 +50,59 @@ class X implements Stringable {
 
 	private function __construct(private readonly array $data) {}
 
+	/**
+	 * Create a dynamic XML structure. Each method call creates a new element in the structure. The name of the method
+	 * is the name of an element, which means that the method name is case-sensetive. This also means, that it is
+	 * possible to create elements with special characters in names (i.e. colons). Each method accepts zero, one or
+	 * two arguments. If there are no arguments, an empty element is created. If the amount of arguments is 1, it could
+	 * be an array (representing attributes) or a string, a function, an instance of `X` or an instance of `Node` (
+	 * representing content). If two arguments are passed, then the first one must represent arguments and the second
+	 * one must represent content. Otherwise an exception is thrown.
+	 * 
+	 * ```php
+	 * $b->html();                         // <html />
+	 * $b->html(['lang' => 'en']);         // <html lang="en" />
+	 * $b->html('Text');                   // <html>Text</html>
+	 * $b->html(['lang' => 'en'], 'Text'); // <html lang="en">Text</html>
+	 * $b->html(new stdClass);             // An exception
+	 * ```
+	 * 
+	 * To create attributes, pass an array, where each key is a name of an attribute. Each value must be a string.
+	 * The special case is entries for attributes class, style, data and aria. Instead of string, it's possible to pass
+	 * another array as a value.
+	 * 
+	 * ```php
+	 * $b->html(['lang' => 'en']);                         // <html lang="en" />
+	 * $b->html(['class' => ['a', 'b']]);                  // <html class="a b" />
+	 * $b->html(['class' => ['a' => true, 'b' => false]]); // <html class="a" />
+	 * $b->html(['style' => ['font-size' => '12px']]);     // <html style="font-size: 12px" />
+	 * $b->html(['data' => ['count' => 10]]);              // <html data-count="10" />
+	 * $b->html(['aria' => ['hidden' => 'true']]);         // <html aria-hidden="true" />
+	 * ```
+	 * 
+	 * To create a content, next types are allowed
+	 * 
+	 * ```php
+	 * $b->html('Text');               // <html>Text</html>, primitives
+	 * $b->html(new TextNode('Text')); // <html>Text</html>, instances of the class `Node`
+	 * $b->html(X::new(function ($b) {
+	 * 	$b->body();
+	 * }));                            // <html><body></body></html>, instances of the class `X`
+	 * $b->html(function ($b) {
+	 * 	$b->body();
+	 * });                             // <html><body></body></html>, functions - the most common value
+	 * ```
+	 * 
+	 * It's also possible to use `$this` instead of the passed argument
+	 * 
+	 * ```php
+	 * X::new(function ($b) {
+	 * 	$this->html(); // The same as calling $b->html()
+	 * });
+	 * ```
+	 * @param string $name The name of an element.
+	 * @param array $args Attributes and content for the element.
+	 */
 	public function __call(string $name, array $args): void {
 		[$attributes, $content] = self::getAttributesAndContent(...$args);
 		$attributes = self::processAttributes($attributes);
@@ -62,10 +115,34 @@ class X implements Stringable {
 			$child = clone $child;
 	}
 
+	/**
+	 * Return a value from the array passed to the contructor through the method `new` or `null` if the value not found.
+	 * ```php
+	 * X::new(['a' => 1, 'b' => 2], function ($b) {
+	 * 	$b->html(function ($b) {
+	 * 		$b->body($b->a); // <body>1</body>
+	 * 	});
+	 * });
+	 * ```
+	 * @param string $name Name of a key of the passed array.
+	 * @return mixed The value of the key or `null` if there is no value with the associated key.
+	 */
 	public function __get(string $name): mixed {
 		return @$this->data[$name];
 	}
 
+	/**
+	 * Add a content directory into the current node. This doesn't deepen the structure, instead it adds an argument
+	 * into the current layer.
+	 * ```php
+	 * X::new(function () {
+	 * 	$this->html(function () {
+	 * 		$this('Text');          // Add a string 'Text'
+	 * 		$this(X::cdata('abc')); // Add a CDATA node <![CDATA[abc]]>
+	 * 	});
+	 * });
+	 * ```
+	 */
 	public function __invoke(string | self | Node ...$args): void {
 		foreach ($args as $arg)
 			array_push($this->content, ...match (true) {

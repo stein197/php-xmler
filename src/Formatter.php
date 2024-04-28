@@ -52,6 +52,8 @@ final class Formatter {
 		// TODO
 		'nl' => "\n", // \n, \r\n, \r
 		// TODO
+		'padStyle' => true, // a: 1; b: 2, a:1; b:2, a:1,b:2, a: 1,b: 2
+		// TODO
 		'quotes' => '"', // ", ', false
 		// TODO
 		'singleTextOnNewLine' => false, // <p>text</p>, <p>\n\ttext\n</p>
