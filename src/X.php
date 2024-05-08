@@ -18,6 +18,7 @@ use function sizeof;
 // $this
 // Parsing
 // Modificiation
+// TODO: ability to shorten tag names with reflection (function (X $x, $div, $p) {$x->div();$div();$p();})
 class X implements Stringable {
 
 	/**
