@@ -1,7 +1,0 @@
-<phpunit beStrictAboutTestsThatDoNotTestAnything="false">
-	<testsuites>
-		<testsuite name="test">
-			<directory>tests</directory>
-		</testsuite>
-	</testsuites>
-</phpunit>
