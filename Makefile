@@ -15,3 +15,6 @@ install:
 
 test:
 	$(call composer, test)
+
+analyse:
+	$(call composer, analyse)

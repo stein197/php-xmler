@@ -6,10 +6,22 @@
     "autoload": {
         "psr-4": {
             "Stein197\\Xmler\\": "src/"
-        }
+        },
+        "files": [
+            "./src/index.php"
+        ]
     },
     "require-dev": {
-        "pestphp/pest": "^4.0"
+        "pestphp/pest": "^4.0",
+        "phpstan/phpstan": "^2.1"
+    },
+    "scripts": {
+        "test": "pest --test-directory test",
+        "analyse": "phpstan analyse --level 10 src"
+    },
+    "scripts-descriptions": {
+        "test": "Run Pest tests",
+        "analyse": "Run PHPStan analyser"
     },
     "config": {
         "allow-plugins": {
